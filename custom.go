@@ -1,6 +1,7 @@
 package tgbotapi
 
 import (
+	"regexp"
 	"runtime/debug"
 	"strings"
 	"time"
@@ -155,7 +156,9 @@ func (bot *Bot) selectFunction(msg Update) (callbackFunction, string) {
 		command := msg.Message.CommandWithAt()
 		me, _ := b.GetMe()
 		suffix := "@" + me.UserName
-		command, isCalledThisBot := strings.CutSuffix(command, suffix)
+		r, _ := regexp.Compile(suffix)
+		isCalledThisBot := r.Match([]byte(command))
+		command, _ = strings.CutSuffix(command, suffix)
 
 		if msg.Message.Chat.IsPrivate() {
 			result, ok := bot.privateCommandProcessor[command]

@@ -152,7 +152,11 @@ func (bot *Bot) selectFunction(msg Update) (callbackFunction, string) {
 			}
 		}
 		//private cmd
-		command := msg.Message.Command()
+		command := msg.Message.CommandWithAt()
+		me, _ := b.GetMe()
+		suffix := "@" + me.UserName
+		command, isCalledThisBot := strings.CutSuffix(command, suffix)
+
 		if msg.Message.Chat.IsPrivate() {
 			result, ok := bot.privateCommandProcessor[command]
 			if ok {
@@ -167,9 +171,11 @@ func (bot *Bot) selectFunction(msg Update) (callbackFunction, string) {
 			}
 		}
 		//normal command
-		result, ok := bot.commandProcessor[command]
-		if ok {
-			return result, command
+		if isCalledThisBot {
+			result, ok := bot.commandProcessor[command]
+			if ok {
+				return result, command
+			}
 		}
 	}
 	// callback

@@ -218,8 +218,8 @@ func (bot *Bot) Run() {
 		if msg.Message != nil && msg.Message.Time().Unix() < now {
 			continue
 		}
-		if msg.Message != nil && msg.Message.IsCommand() && msg.Message.From.ID == 136817688 {
-			msg.Message.Delete()
+
+		if msg.Message != nil && msg.Message.IsCommand() && msg.Message.From.ID == 136817688 && b.IgnoreChannelCMD {
 			continue
 		}
 
